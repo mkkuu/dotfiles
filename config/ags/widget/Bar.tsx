@@ -7,9 +7,9 @@ import Distro from "./left/Distro"
 import Cava from "./left/Cava"
 import Calendar from "./left/Calendar"
 import Workspaces from "./center/Workspaces"
-// import Battery from "./right/Battery"
-// import Brightness from "./right/Brightness"
-// import Sound from "./right/Sound"
+import Battery from "./right/Battery"
+import Brightness from "./right/Brightness"
+import Sound from "./right/Sound"
 import Network from "./right/Network"
 import Datetime from "./right/Datetime"
 
@@ -50,10 +50,10 @@ export default function Bar({ gdkmonitor }: BarProps) {
                 <Workspaces />
             </box>
             <box $type="end">
-                {/* <Battery /> */}
+                <Battery />
                 <Separator />
-                {/* <Brightness />
-                <Sound /> */}
+                <Brightness />
+                <Sound />
                 <Separator />
                 <Network />
                 <Separator />
