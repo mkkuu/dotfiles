@@ -1,0 +1,50 @@
+import { createBinding, createComputed } from 'ags'
+import AstalNetwork from 'gi://AstalNetwork'
+
+
+// Pick an icon for wifi strength
+const wifi_icon = (s: number) => {
+  if (s > 80) return '󰤨';
+  else if (s > 60) return '󰤥';
+  else if (s > 40) return '󰤢';
+  else if (s > 20) return '󰤟';
+  else if (s > 0) return'󰤯';
+  else return '󰤮';
+}
+
+
+// Select icon + text for label
+const pick_icon_label = ([mode, wifi]: [AstalNetwork.Primary, AstalNetwork.Wifi|null]) => {
+    console.log(mode, wifi)
+
+    if (wifi === null) {
+      return '  loading'
+    }
+
+    try {
+      switch (mode) {
+        case AstalNetwork.Primary.WIFI: return `${wifi_icon(wifi.activeAccessPoint.strength)}  ${wifi.activeAccessPoint.ssid}`
+        case AstalNetwork.Primary.WIRED: return `󱘖  Wired`
+        case AstalNetwork.Primary.UNKNOWN: return (wifi.enabled) ? `  No WiFi` : `󰤫  No WiFi`
+      }
+    }
+
+    catch {
+      return '  loading'
+    }
+}
+
+
+export default function Network() {
+    const network = AstalNetwork.get_default()
+
+    const mode = createBinding(network, 'primary')
+    const wifi = createBinding(network, 'wifi') 
+
+    return (
+      <label
+        label={createComputed([mode, wifi]).as(pick_icon_label)}
+        css_name='network_label'
+      />
+    )
+}
