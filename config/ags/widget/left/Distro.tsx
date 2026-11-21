@@ -3,9 +3,15 @@ import { createState } from "ags";
 import { exec } from "ags/process";
 
 // Notification button
-const start_state = exec("makoctl mode")
-    .split(/\s+/)
-    .includes("do-not-disturb");
+let start_state = false;
+
+try {
+    start_state = exec("makoctl mode")
+        .split(/\s+/)
+        .includes("do-not-disturb");
+} catch (error) {
+    console.error("Unable to retrieve Mako notification mode:", error);
+}
 
 const [notif, setNotif] = createState(start_state);
 const [labelNotif, setLabelNotif] = createState(
@@ -15,10 +21,13 @@ const [labelNotif, setLabelNotif] = createState(
 const toggle_dnd = () => {
     const next = !notif.peek();
 
-    exec("makoctl mode -t do-not-disturb");
-
-    setNotif(next);
-    setLabelNotif(next ? "" : "");
+    try {
+        exec("makoctl mode -t do-not-disturb");
+        setNotif(next);
+        setLabelNotif(next ? "" : "");
+    } catch (error) {
+        console.error("Unable to toggle Mako DND mode:", error);
+    }
 };
 
 export default function Distro() {

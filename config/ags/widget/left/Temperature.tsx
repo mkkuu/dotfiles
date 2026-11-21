@@ -1,26 +1,31 @@
+
 import { createPoll } from "ags/time";
 
 function transform(val: string) {
-  if (val.length == 0)
-      return '';
+    if (!val) return " --°C";
 
-  const tmp = JSON.parse(val.replaceAll('NaN', '0'))
-  const SENSOR = 'k10temp-pci-00c3';
+    try {
+        const sensors = JSON.parse(val);
+        const temperature =
+            sensors["coretemp-isa-0000"]?.["Package id 0"]?.["temp1_input"];
 
-  if (tmp[SENSOR] === undefined)
-    return 'null';
+        if (typeof temperature !== "number") {
+            return " --°C";
+        }
 
-  const itm = tmp
-    [SENSOR]
-    ['Tctl']
-    ['temp1_input']
-
-  return ` ${itm.toFixed(1)}°C`
+        return ` ${temperature.toFixed(1)}°C`;
+    } catch {
+        return " --°C";
+    }
 }
 
-
-const temperature = createPoll('', 2000, 'sensors -j')
+const temperature = createPoll("", 2000, "sensors -j");
 
 export default function Temperature() {
-    return (<label label={temperature.as(transform)} css_name='temperature_label' />)
+    return (
+        <label
+            label={temperature.as(transform)}
+            css_name="temperature_label"
+        />
+    );
 }

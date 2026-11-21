@@ -1,16 +1,28 @@
+
 import { createPoll } from "ags/time";
 
 function transform(val: string) {
-  const used_line = val.split('\n').find(x => x.includes('used memory')) ?? ''
-  const used_val = used_line.trim().split(' ')[0]
-  const res = Number(used_val) / 1_000_000;
+    const line = val.split("\n").find(
+        (line) => line.startsWith("Mem:")
+    );
 
-  return `  ${res.toFixed(2)}GiB`
+    if (!line) return "  -- GiB";
+
+    const values = line.trim().split(/\s+/);
+    const used = Number(values[2]);
+
+    if (!Number.isFinite(used)) return "  -- GiB";
+
+    return `  ${(used / 1024 ** 3).toFixed(2)} GiB`;
 }
 
-
-const memory = createPoll('', 2000, 'vmstat -s');
+const memory = createPoll("", 2000, "free -b");
 
 export default function Memory() {
-    return (<label label={memory.as(transform)} css_name='memory_label' />)
+    return (
+        <label
+            label={memory.as(transform)}
+            css_name="memory_label"
+        />
+    );
 }

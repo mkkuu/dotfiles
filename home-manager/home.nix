@@ -15,6 +15,8 @@
   home.packages = [
     pkgs.brightnessctl
     pkgs.hyprsunset
+    pkgs.cava
+    pkgs.lm_sensors
 
     (pkgs.python3.withPackages (ps: [
       ps.icalendar
@@ -43,7 +45,7 @@
   };
 
   services.wayle = {
-    enable = true;
+    enable = false;
     autoInstallDependencies = true;
 
     package = pkgs.wayle.overrideAttrs (old: {
