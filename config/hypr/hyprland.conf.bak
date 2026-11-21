@@ -1,0 +1,72 @@
+ 
+monitor = , preferred, auto, 1, mirror, eDP-1
+
+env = MOZ_ENABLE_WAYLAND,1
+env = QT_QPA_PLATFORM,wayland
+env = BROWSER,brave --force-device-scale-factor=1.25
+env = XDG_CURRENT_DESKTOP = Hyprland
+env = XDG_SESSION_TYPE= wayland
+env = XCURSOR_THEME,Bibata-Modern-Ice
+env = XCURSOR_SIZE,24
+
+input {
+  kb_layout = fr
+}
+
+general {
+  gaps_in = 5
+  gaps_out = 10
+  border_size = 2
+  col.active_border = rgba(88c0d0ff) rgba(81a1c1ff) 45deg
+}
+
+decoration {
+  rounding = 15
+  active_opacity = 0.9
+  inactive_opacity = 0.65
+}
+
+exec-once = dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY HYPRLAND_INSTANCE_SIGNATURE XDG_CURRENT_DESKTOP
+exec-once = systemctl --user import-environment DISPLAY WAYLAND_DISPLAY HYPRLAND_INSTANCE_SIGNATURE XDG_CURRENT_DESKTOP
+exec-once = swaybg -i /etc/nixos/wallpapers/wallpaper_porsche2.jpg --mode fill
+exec-once = kitty
+exec-once = hyprpanel
+exec-once = mako
+exec-once = wl-paste --watch cliphist store &
+exec-once = /run/current-system/sw/libexec/polkit-gnome-authentication-agent-1
+
+bind = SUPER, RETURN, exec, kitty
+bind = SUPER, H, exec, hyprctl reload
+bind = SUPER, D, exec, wofi --show drun
+bind = SUPER_SHIFT, D, exec, brave
+bind = SUPER, S, exec, grim -g "$(slurp)" - | wl-copy
+bind = SUPER, V, exec, cliphist list | wofi --dmenu | cliphist decode | wl-copy
+bind = SUPER, Q, killactive
+bind = SUPER, M, exit
+
+bind = SUPER, F, fullscreen
+bindm = SUPER, mouse:273, resizewindow
+
+bind = SUPER_SHIFT, left, movefocus, l
+bind = SUPER_SHIFT, right, movefocus, r
+bind = SUPER_SHIFT, up, movefocus, u
+bind = SUPER_SHIFT, down, movefocus, d
+
+bind = SUPER, A , workspace, 1
+bind = SUPER, Z, workspace, 2
+bind = SUPER, E, workspace, 3
+bind = SUPER, R, workspace, 4
+bind = SUPER, T, workspace, 5
+bind = SUPER_SHIFT, A, movetoworkspace, 1
+bind = SUPER_SHIFT, Z, movetoworkspace, 2
+bind = SUPER_SHIFT, E, movetoworkspace, 3
+bind = SUPER_SHIFT, R, movetoworkspace, 4
+bind = SUPER_SHIFT, T, movetoworkspace, 5
+
+bind = SUPER, Space, workspace, e+1
+
+bindm = ALT, mouse:272, movewindow
+
+bindel = , XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%+
+bindel = , XF86AudioLowerVolume, exec, wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%-
+bindl = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle

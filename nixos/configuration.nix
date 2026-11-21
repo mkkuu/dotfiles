@@ -61,6 +61,21 @@
   virtualisation.virtualbox.host.enable = true;
   virtualisation.docker.enable = true;
   users.extraGroups.vboxusers.members = [ "mkkuu" ];
+
+  systemd.user.services.polkit-gnome-authentication-agent = {
+    description = "Polkit GNOME Authentication Agent";
+
+    wantedBy = [ "graphical-session.target" ];
+    wants = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      Restart = "on-failure";
+      RestartSec = 1;
+    };
+  };
   
   services.gnome.gnome-keyring.enable = true;
   services.greetd.enable = true;
@@ -81,12 +96,11 @@
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
 
-  # Optionnel : pour éviter les warnings Wayland / GTK
   environment.variables = {
     XDG_CURRENT_DESKTOP = "Hyprland";
     XDG_SESSION_TYPE = "wayland";
     XDG_SESSION_DESKTOP = "Hyprland";
-    WLR_NO_HARDWARE_CURSORS = "1"; # parfois nécessaire
+    WLR_NO_HARDWARE_CURSORS = "1";
   };
 
   environment.sessionVariables = {
@@ -178,7 +192,6 @@
      udisks
      cmatrix
      git-filter-repo
-     hyprland
      bibata-cursors
      gitFull
      hyprpaper
@@ -221,7 +234,6 @@
      bluez
      bluez-tools
      pavucontrol	
-     pkgs.hyprland
      pkgs.brave
      pkgs.discord
      pkgs.obsidian
