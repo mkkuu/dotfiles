@@ -8,11 +8,14 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./modules/stirling-pdf.nix
     ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -43,17 +46,54 @@
   };
 
   # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
+  services.xserver.enable = false;
+  services.displayManager.sddm.wayland.enable = false;
+  #services.xserver.displayManager.sddm.enable = true;
   # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  #services.xserver.displayManager.gdm.enable = true;
+  #services.xserver.desktopManager.gnome.enable = true;
 
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "fr";
-    variant = "azerty";
+  services.displayManager.sddm.enable = false; # on désactive SDDM
+
+  services.tailscale.enable = true;
+
+  virtualisation.virtualbox.host.enable = true;
+  virtualisation.docker.enable = true;
+  users.extraGroups.vboxusers.members = [ "mkkuu" ];
+  
+  services.gnome.gnome-keyring.enable = true;
+  services.greetd.enable = true;
+  services.greetd.settings = {
+    default_session = {
+      command = "Hyprland";
+      user = "mkkuu";
+    };
   };
+
+  programs.hyprland.enable = true;
+  programs.seahorse.enable = true;
+  programs.wireshark.enable = true;
+  programs.nix-ld.enable = true;
+  programs.dconf.enable = true;
+  services.rabbitmq.enable = true;
+
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+
+  # Optionnel : pour éviter les warnings Wayland / GTK
+  environment.variables = {
+    XDG_CURRENT_DESKTOP = "Hyprland";
+    XDG_SESSION_TYPE = "wayland";
+    XDG_SESSION_DESKTOP = "Hyprland";
+    WLR_NO_HARDWARE_CURSORS = "1"; # parfois nécessaire
+  };
+
+  environment.sessionVariables = {
+    GTK_THEME = "Adwaita";
+  };
+
+  security.pam.services.greetd.enableGnomeKeyring = true;
+  #security.pam.services.hyprland.enableGnomeKeyring = true;
 
   # Configure console keymap
   console.keyMap = "fr";
@@ -62,8 +102,12 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+  services.blueman.enable = true;
   security.rtkit.enable = true;
+  services.pipewire.wireplumber.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -77,6 +121,12 @@
     #media-session.enable = true;
   };
 
+  hardware.bluetooth.settings = {
+  General = {
+    Enable = "Source,Sink,Media,Socket";
+    };
+  };
+
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
@@ -84,7 +134,7 @@
   users.users.mkkuu = {
     isNormalUser = true;
     description = "mkkuu";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "wireshark" "docker" ];
     packages = with pkgs; [
     #  thunderbird
     ];
@@ -92,20 +142,105 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
+ 
+  documentation.enable = false;  
+  services.upower.enable = true;
+  
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+     neovim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
      wget
+     eza
+     waybar
+     playerctl
+     pulseaudio
+     networkmanagerapplet
+     kitty
+     wofi
+     zap
+     awww
+     mako
+     swaybg
+     grim
+     slurp
+     openssl
+     git-filter-repo
+     hyprland
+     burpsuite
+     bibata-cursors
+     gitFull
+     hyprpaper
+     hyprlock
+     hypridle
+     btop
+     htop
+     camunda-modeler
+     tree
+     stdenv.cc.cc
+     zlib
+     dbus
+     rabbitmq-server
+     fastfetch
+     nwg-look
+     gcc
+     nodejs
+     unzip
+     uv
+     openfortivpn
+     wirelesstools	
+     wireshark
+     adwaita-icon-theme
+     maven
+     wl-clipboard
+     cliphist
+     chromedriver
+     jdk25
+     steam-run
+     scenebuilder
+     obs-studio
+     lazydocker
+     bluez
+     bluez-tools
+     pavucontrol	
+     pkgs.hyprland
      pkgs.brave
      pkgs.discord
      pkgs.obsidian
      pkgs.theme-obsidian2
      pkgs.git
      pkgs.github-desktop
+     pkgs.vscode
+     pkgs.python312
+     pkgs.python312Packages.pip
+     pkgs.python312Packages.numpy  
+     pkgs.libgcc
+     pkgs.cacert
   ];
 
+  programs.bash.shellAliases = {
+    ls = "eza --icons";
+    ll = "eza -lh --icons --group-directories-first --git --time-style=long-iso --width=50";
+    la = "eza -la --icons";
+    lt = "eza --tree --icons";
+    lsd ="eza -lh --icons --group-directories-first | less -R";
+  };
+
+  fonts.packages = with pkgs; [
+    material-design-icons
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.fira-code
+  ];
+
+  fonts.fontconfig.defaultFonts = {
+    monospace = [ "JetBrainsMono Nerd Font" ];
+    sansSerif = [ "JetBrainsMono Nerd Font" ];
+    serif = [ "JetBrainsMono Nerd Font" ]; 
+  };
+
+  # Pour fix l'erreur de l'absence de SIGNATURE pour Hyprland
+  services.dbus.enable = true;
+  
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
