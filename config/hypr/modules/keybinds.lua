@@ -1,23 +1,20 @@
 
 local terminal = "kitty"
 local browser = "brave"
-local launcher = "wofi"
 
 hl.bind("SUPER + RETURN", hl.dsp.exec_cmd(terminal))
 hl.bind("SUPER + SHIFT + D", hl.dsp.exec_cmd(browser))
-hl.bind("SUPER + D", hl.dsp.exec_cmd(launcher .. " --show drun"))
-
-hl.bind("SUPER + H", hl.dsp.reload_config())
+hl.bind("SUPER + D", hl.dsp.exec_cmd("vicinae toggle"))
 
 hl.bind("SUPER + S", hl.dsp.exec_cmd('grim -g "$(slurp)" - | wl-copy'))
 hl.bind("SUPER + V", hl.dsp.exec_cmd("cliphist list | wofi --dmenu | cliphist decode | wl-copy"))
 
 hl.bind("SUPER + Q", hl.dsp.window.close())
 hl.bind("SUPER + M", hl.dsp.exit())
-hl.bind("SUPER + F", hl.dsp.window.fullscreen({ action = "toggle" }))
 
 hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true })
 hl.bind("ALT + mouse:272", hl.dsp.window.drag(), { mouse = true })
+hl.bind("SUPER + SHIFT + SPACE",hl.dsp.window.float({ action = "toggle" }))
 
 hl.bind("SUPER + SHIFT + Left", hl.dsp.focus({ direction = "l" }))
 hl.bind("SUPER + SHIFT + Right", hl.dsp.focus({ direction = "r" }))

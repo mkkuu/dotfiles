@@ -174,13 +174,12 @@
      neovim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
      wget
      eza
-     waybar
      playerctl
      pulseaudio
      networkmanagerapplet
+     vicinae
      kitty
      wofi
-     zap
      awww
      mako
      swaybg
@@ -218,9 +217,7 @@
      unzip
      uv
      gimp
-     openfortivpn
      wirelesstools	
-     wireshark
      adwaita-icon-theme
      maven
      wl-clipboard
@@ -234,17 +231,16 @@
      bluez
      bluez-tools
      pavucontrol	
-     pkgs.brave
-     pkgs.discord
-     pkgs.obsidian
-     pkgs.git
-     pkgs.github-desktop
-     pkgs.vscode
-     pkgs.python312
-     pkgs.python312Packages.pip
-     pkgs.python312Packages.numpy  
-     pkgs.libgcc
-     pkgs.cacert
+     brave
+     discord
+     obsidian
+     git
+     github-desktop
+     vscode
+     python312
+     python312Packages.pip
+     libgcc
+     cacert
   ];
 
   programs.bash.shellAliases = {

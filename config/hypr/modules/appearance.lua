@@ -16,6 +16,16 @@ hl.config({
         },
 
         layout = "dwindle",
+
+        resize_on_border = true,
+        extend_border_grab_area = 12,
+
+        snap = {
+            enabled = true,
+            monitor_gap = 10,
+            window_gap = 10,
+            respect_gaps = false,
+        },
     },
 
     decoration = {
@@ -36,4 +46,11 @@ hl.config({
     animations = {
         enabled = false,
     },
+})
+
+hl.layer_rule({
+  match = { namespace = "vicinae" },
+  name = "vicinae-blur",
+  blur = true,
+  ignore_alpha = 0,
 })
