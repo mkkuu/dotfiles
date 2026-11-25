@@ -3,10 +3,9 @@
   description = "Mkkuu's NixOS config";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    nixpkgs-brave.url =
-      "github:NixOS/nixpkgs/cc588038c06d9a7c687b82a38112442f97649b31";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-brave.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -35,14 +34,6 @@
         inherit system;
 
         modules = [
-          ({ ... }: {
-            nixpkgs.overlays = [
-              (final: prev: {
-                brave = inputs.nixpkgs-brave.legacyPackages.${system}.brave;
-              })
-            ];
-          })
-
           ./nixos/configuration.nix
 
           home-manager.nixosModules.home-manager
